@@ -1,0 +1,11 @@
+.questionPage_container {
+  width: 100%;
+  box-shadow: 0 0 2px black;
+  border-radius: 3px;
+  margin-top: 20px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
