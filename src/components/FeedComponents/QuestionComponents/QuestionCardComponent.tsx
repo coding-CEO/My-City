@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './QuestionComponent.css';
+import './QuestionCardComponent.css';
 
 import { useEffect } from 'react';
 import { Question } from '../../../classes/Question';
@@ -9,7 +9,7 @@ interface Props {
     question: Question;
 }
 
-const QuestionComponent = (props: Props) => {
+const QuestionCardComponent = (props: Props) => {
 
     const componentDidMount = async () => {
 
@@ -43,4 +43,4 @@ const QuestionComponent = (props: Props) => {
     );
 }
 
-export default QuestionComponent;
+export default QuestionCardComponent;

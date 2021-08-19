@@ -6,7 +6,7 @@ import { BottomNavigation, BottomNavigationAction, Typography } from '@material-
 import RestoreIcon from '@material-ui/icons/Restore';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import { Question } from '../../classes/Question';
-import QuestionComponent from './QuestionComponents/QuestionComponent';
+import QuestionCardComponent from './QuestionComponents/QuestionCardComponent';
 
 const FeedPage = () => {
 
@@ -16,7 +16,9 @@ const FeedPage = () => {
     const componentDidMount = async () => {
         console.log(window.location.search);
         //TODO: fetch questions according to search argument in url
-        setQuestions([new Question(1, 'Jane is Running', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit.', new Date(), 'https://i.picsum.photos/id/781/300/500.jpg?hmac=HyDr7W7aw9LRkzQ3eYgKrLjjO0gXFYF_0VY0oAxM1bE')]);
+        setQuestions([new Question(1, 'Jane is Running', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit.',
+            new Date(),
+            'https://i.picsum.photos/id/781/300/500.jpg?hmac=HyDr7W7aw9LRkzQ3eYgKrLjjO0gXFYF_0VY0oAxM1bE')]);
     }
 
     useEffect(() => {
@@ -27,7 +29,7 @@ const FeedPage = () => {
         //TODO: add loading icon if possible
         if (questions.length <= 0) return [<h3 key="$">Loading</h3>];
         return questions.map((question: Question, index: number) => {
-            return <QuestionComponent key={question.id} question={question} />;
+            return <QuestionCardComponent key={question.id} question={question} />;
         });
     }
 
