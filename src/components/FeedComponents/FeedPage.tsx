@@ -17,21 +17,18 @@ const FeedPage = () => {
     const [questions, setQuestions] = useState<Question[]>([]);
     const [filterState, setFilterState] = useState(0);
     const [filterCity, setFilterCity] = useState(0);
+    const [filterQuestionType, setFilterQuestionType] = useState(0);
 
-    const componentDidMount = async () => {
+    useEffect(() => {
         console.log(window.location.search);
         //TODO: fetch questions accordingly
         fetchAllQuestions();
-    }
-
-    useEffect(() => {
-        componentDidMount();
     }, []);
 
     const fetchAllQuestions = (): void => {
         setTimeout(() => {
             setQuestions([new Question(1, 'Jane is Running', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit.',
-                new Date(),
+                new Date(), 5, 1,
                 'https://i.picsum.photos/id/781/300/500.jpg?hmac=HyDr7W7aw9LRkzQ3eYgKrLjjO0gXFYF_0VY0oAxM1bE')]);
         }, 2000);
     }
@@ -39,7 +36,7 @@ const FeedPage = () => {
     const fetchMyQuestions = (): void => {
         setTimeout(() => {
             setQuestions([new Question(1, 'Turned On Laptop', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit.',
-                new Date(),
+                new Date(), 10, 1,
                 'https://i.picsum.photos/id/180/200/300.jpg?hmac=EC8Kweq0GgryGedfHPQFsFTXsZ8NgHaYU5ZnhoGkPLA')]);
         }, 2000);
     }
@@ -62,10 +59,15 @@ const FeedPage = () => {
         setFilterCity(Number(event.target.value));
     }
 
+    const onFilterQuestionTypeChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+        //TODO: completet this (maybe filter directly)
+        setFilterQuestionType(Number(event.target.value));
+    }
+
     const getFilteringView = (): JSX.Element => {
         return (
             <div className="filter_container">
-                <h4>Filter Options</h4>
+                <h4>Filter Questions</h4>
                 <div className="filter_dropdown_container">
                     <FormControl variant="outlined">
                         <InputLabel id="state-dropdown-id">State</InputLabel>
@@ -91,6 +93,19 @@ const FeedPage = () => {
                             {LocationHandler.getCities(filterState).map((cityName: string, index: number) => {
                                 return <MenuItem key={cityName} value={index}>{cityName}</MenuItem>;
                             })}
+                        </Select>
+                    </FormControl>
+                    <FormControl variant="outlined" style={{ minWidth: '104px' }}>
+                        <InputLabel id="question-type-dropdown-id">Question Type</InputLabel>
+                        <Select
+                            labelId="question-type-dropdown-id"
+                            value={filterQuestionType}
+                            onChange={onFilterQuestionTypeChange}
+                            label="Question Type"
+                        >
+                            <MenuItem value={0}>Both</MenuItem>;
+                            <MenuItem value={1}>Answered</MenuItem>;
+                            <MenuItem value={2}>Unanswered</MenuItem>;
                         </Select>
                     </FormControl>
                 </div>
