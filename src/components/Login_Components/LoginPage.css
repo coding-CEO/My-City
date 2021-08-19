@@ -1,0 +1,29 @@
+.login_page_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 3px;
+  box-shadow: 0 0 2px black;
+  margin-top: 30px;
+}
+
+.login_page_container h3 {
+  margin-top: 20px;
+}
+
+.login_page_container form {
+  margin: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.login_page_container form .MuiTextField-root {
+  margin-bottom: 10px;
+}
+
+.login_page_container form button {
+  margin-top: 10px;
+}
