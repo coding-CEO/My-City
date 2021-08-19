@@ -1,9 +1,9 @@
 import * as React from 'react';
 import './QuestionCardComponent.css';
 
-import { useEffect } from 'react';
 import { Question } from '../../../classes/Question';
 import { Card, CardActionArea, CardMedia, CardContent, Typography } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 interface Props {
     question: Question;
@@ -11,16 +11,15 @@ interface Props {
 
 const QuestionCardComponent = (props: Props) => {
 
-    const componentDidMount = async () => {
+    const history = useHistory();
 
+    const handleOpenQuestion = (): void => {
+        history.push(`/question/${props.question.id}`);
     }
 
-    useEffect(() => {
-        componentDidMount();
-    }, []);
-
+    //TODO: add extra fields like, isAnswerd status
     return (
-        <Card className="questionCard_container">
+        <Card className="questionCard_container" onClick={handleOpenQuestion}>
             <CardActionArea>
                 <CardMedia
                     className="questionCard_img_container"

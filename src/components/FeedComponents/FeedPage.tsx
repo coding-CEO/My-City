@@ -1,10 +1,12 @@
 import * as React from 'react';
 import './FeedPage.css';
 
+import LoadingIcon from '../../static/main_loading.gif';
+
 import { useState, useEffect } from 'react';
 import { BottomNavigation, BottomNavigationAction, Typography } from '@material-ui/core';
-import RestoreIcon from '@material-ui/icons/Restore';
-import FavoriteIcon from '@material-ui/icons/Favorite';
+import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
+import DynamicFeedIcon from '@material-ui/icons/DynamicFeed';
 import { Question } from '../../classes/Question';
 import QuestionCardComponent from './QuestionComponents/QuestionCardComponent';
 
@@ -15,42 +17,78 @@ const FeedPage = () => {
 
     const componentDidMount = async () => {
         console.log(window.location.search);
-        //TODO: fetch questions according to search argument in url
-        setQuestions([new Question(1, 'Jane is Running', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit.',
-            new Date(),
-            'https://i.picsum.photos/id/781/300/500.jpg?hmac=HyDr7W7aw9LRkzQ3eYgKrLjjO0gXFYF_0VY0oAxM1bE')]);
+        //TODO: fetch questions accordingly
+        fetchAllQuestions();
     }
 
     useEffect(() => {
         componentDidMount();
     }, []);
 
+    const fetchAllQuestions = (): void => {
+        setTimeout(() => {
+            setQuestions([new Question(1, 'Jane is Running', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit.',
+                new Date(),
+                'https://i.picsum.photos/id/781/300/500.jpg?hmac=HyDr7W7aw9LRkzQ3eYgKrLjjO0gXFYF_0VY0oAxM1bE')]);
+        }, 2000);
+    }
+
+    const fetchMyQuestions = (): void => {
+        setTimeout(() => {
+            setQuestions([new Question(1, 'Turned On Laptop', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit.',
+                new Date(),
+                'https://i.picsum.photos/id/180/200/300.jpg?hmac=EC8Kweq0GgryGedfHPQFsFTXsZ8NgHaYU5ZnhoGkPLA')]);
+        }, 2000);
+    }
+
     const getQuestionCards = (): JSX.Element[] => {
-        //TODO: add loading icon if possible
-        if (questions.length <= 0) return [<h3 key="$">Loading</h3>];
+        if (questions.length <= 0) return [<img src={LoadingIcon} key="$" alt="loading" style={{ width: '50px' }} />];
         return questions.map((question: Question, index: number) => {
             return <QuestionCardComponent key={question.id} question={question} />;
         });
     }
 
+    const getFilteringView = (): JSX.Element => {
+        //TODO: complete this
+        return <h4>Filtering view</h4>;
+    }
+
+    const getTitle = (): string => {
+        switch (tabValue) {
+            case 0:
+                return "Feed";
+            default:
+                return "My Questions";
+        }
+    }
+
     return (
         <div className="feedPage_container">
             <div className="feedContent_container">
-                <Typography variant="h4">Feed</Typography>
+                {getFilteringView()}
+                <Typography variant="h4">{getTitle()}</Typography>
                 <div className="feedContentCards_container">
                     {getQuestionCards()}
                 </div>
             </div>
             <BottomNavigation
                 value={tabValue}
-                onChange={(event, newValue) => {
+                onChange={(event, newValue: number) => {
                     setTabValue(newValue);
+                    setQuestions([]);
+                    switch (newValue) {
+                        case 0:
+                            fetchAllQuestions();
+                            break;
+                        case 1:
+                            fetchMyQuestions();
+                            break;
+                    }
                 }}
                 showLabels
             >
-                {/* TODO: change icon later */}
-                <BottomNavigationAction label="Main Feed" icon={<RestoreIcon />} />
-                <BottomNavigationAction label="My Questions" icon={<FavoriteIcon />} />
+                <BottomNavigationAction label="Main Feed" icon={<DynamicFeedIcon />} />
+                <BottomNavigationAction label="My Questions" icon={<QuestionAnswerIcon />} />
             </BottomNavigation>
         </div>
     );

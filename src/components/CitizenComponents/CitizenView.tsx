@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import { Citizen } from '../../classes/Citizen';
 import FeedPage from '../FeedComponents/FeedPage';
 import LoginPage from '../Login_Components/LoginPage';
+import QuestionPageComponent from '../QuestionPageComponents/QuestionPageComponent';
 
 const CitizenView = () => {
 
@@ -20,6 +21,10 @@ const CitizenView = () => {
                 <Route path='/feed' exact render={(props) => {
                     if (citizen.getAadharNumber().length <= 0) return <Redirect to="/" {...props} />;
                     return <FeedPage />;
+                }} />
+                <Route path='/question/:questionId' exact render={(props) => {
+                    if (citizen.getAadharNumber().length <= 0) return <Redirect to="/" {...props} />;
+                    return <QuestionPageComponent {...props} />;
                 }} />
                 <Route render={() => {
                     return <h2>Page Not Found 404</h2>;

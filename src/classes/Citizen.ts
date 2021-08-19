@@ -1,7 +1,7 @@
 export class Citizen {
-  private aadharNumber: string = "1"; //TODO: change this later
-  constructor(aadharNumber?: string) {
-    if (aadharNumber) this.aadharNumber = aadharNumber;
+  private hashedAadharNumber: string = "1"; //TODO: change this later
+  constructor(hashedAadharNumber?: string) {
+    if (hashedAadharNumber) this.hashedAadharNumber = hashedAadharNumber;
   }
   public static deepCopy = (source: Citizen): Citizen => {
     let temp = Object.create(source);
@@ -9,9 +9,9 @@ export class Citizen {
     return temp;
   };
   public getAadharNumber = (): string => {
-    return this.aadharNumber;
+    return this.hashedAadharNumber;
   };
-  public setAadharNumber = (aadharNumber: string): void => {
-    this.aadharNumber = aadharNumber;
+  public setAadharNumber = (hashedAadharNumber: string): void => {
+    this.hashedAadharNumber = hashedAadharNumber;
   };
 }
