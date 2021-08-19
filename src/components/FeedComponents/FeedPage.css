@@ -46,3 +46,27 @@
   flex: 1;
   max-width: inherit;
 }
+
+.filter_container {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.filter_container .MuiSelect-root {
+  font-size: 14px;
+}
+
+.filter_dropdown_container .MuiFormControl-root {
+  margin-right: 15px;
+}
+
+.filter_container h4 {
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+.filter_dropdown_container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}

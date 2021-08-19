@@ -4,16 +4,19 @@ import './FeedPage.css';
 import LoadingIcon from '../../static/main_loading.gif';
 
 import { useState, useEffect } from 'react';
-import { BottomNavigation, BottomNavigationAction, Typography } from '@material-ui/core';
+import { BottomNavigation, BottomNavigationAction, FormControl, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
 import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 import DynamicFeedIcon from '@material-ui/icons/DynamicFeed';
 import { Question } from '../../classes/Question';
 import QuestionCardComponent from './QuestionComponents/QuestionCardComponent';
+import { LocationHandler } from '../../utils/LocationHandler';
 
 const FeedPage = () => {
 
     const [tabValue, setTabValue] = useState(0);
     const [questions, setQuestions] = useState<Question[]>([]);
+    const [filterState, setFilterState] = useState(0);
+    const [filterCity, setFilterCity] = useState(0);
 
     const componentDidMount = async () => {
         console.log(window.location.search);
@@ -48,9 +51,51 @@ const FeedPage = () => {
         });
     }
 
+    const onFilterStateChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+        //TODO: completet this (maybe filter directly)
+        setFilterState(Number(event.target.value));
+        setFilterCity(0);
+    }
+
+    const onFilterCityChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+        //TODO: completet this (maybe filter directly)
+        setFilterCity(Number(event.target.value));
+    }
+
     const getFilteringView = (): JSX.Element => {
-        //TODO: complete this
-        return <h4>Filtering view</h4>;
+        return (
+            <div className="filter_container">
+                <h4>Filter Options</h4>
+                <div className="filter_dropdown_container">
+                    <FormControl variant="outlined">
+                        <InputLabel id="state-dropdown-id">State</InputLabel>
+                        <Select
+                            labelId="state-dropdown-id"
+                            value={filterState}
+                            onChange={onFilterStateChange}
+                            label="State"
+                        >
+                            {LocationHandler.getStates().map((stateName: string, index: number) => {
+                                return <MenuItem key={stateName} value={index}>{stateName}</MenuItem>;
+                            })}
+                        </Select>
+                    </FormControl>
+                    <FormControl variant="outlined">
+                        <InputLabel id="city-dropdown-id">City</InputLabel>
+                        <Select
+                            labelId="city-dropdown-id"
+                            value={filterCity}
+                            onChange={onFilterCityChange}
+                            label="City"
+                        >
+                            {LocationHandler.getCities(filterState).map((cityName: string, index: number) => {
+                                return <MenuItem key={cityName} value={index}>{cityName}</MenuItem>;
+                            })}
+                        </Select>
+                    </FormControl>
+                </div>
+            </div>
+        );
     }
 
     const getTitle = (): string => {
@@ -76,6 +121,7 @@ const FeedPage = () => {
                 onChange={(event, newValue: number) => {
                     setTabValue(newValue);
                     setQuestions([]);
+                    //TODO: think about this later
                     switch (newValue) {
                         case 0:
                             fetchAllQuestions();
