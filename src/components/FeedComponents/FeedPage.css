@@ -1,0 +1,48 @@
+.feedPage_container {
+  position: relative;
+  width: 100%;
+  min-height: 150px;
+  box-shadow: 0 0 2px black;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.feedContent_container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 15px 30px;
+  margin-top: 56px;
+}
+
+.feedContent_container h4 {
+  align-self: flex-start;
+}
+
+.feedContentCards_container {
+  width: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 15px;
+}
+
+.feedPage_container .MuiBottomNavigation-root {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  border-bottom: 1px solid rgb(179, 179, 179);
+}
+
+.feedPage_container .MuiBottomNavigation-root button {
+  flex: 1;
+  max-width: inherit;
+}

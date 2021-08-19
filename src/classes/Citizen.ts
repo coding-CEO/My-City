@@ -1,5 +1,5 @@
 export class Citizen {
-  private aadharNumber: string = "";
+  private aadharNumber: string = "1"; //TODO: change this later
   constructor(aadharNumber?: string) {
     if (aadharNumber) this.aadharNumber = aadharNumber;
   }
