@@ -3,6 +3,7 @@ import './App.css';
 
 import AuthorityView from './AuthorityComponents/AuthorityView';
 import CitizenView from './CitizenComponents/CitizenView';
+import NavBar from './NavBarComponents/NavBar';
 
 const App = () => {
 
@@ -18,9 +19,12 @@ const App = () => {
   }
 
   return (
-    <div className="App">
-      {getViewAccordingToUrl()}
-    </div>
+    <React.Fragment>
+      <NavBar />
+      <div className="App">
+        {getViewAccordingToUrl()}
+      </div>
+    </React.Fragment>
   );
 }
 
