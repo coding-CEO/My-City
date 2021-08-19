@@ -1,0 +1,8 @@
+.questionCard_container {
+  width: 90%;
+  max-width: 300px;
+}
+
+.questionCard_img_container {
+  min-height: 150px;
+}
