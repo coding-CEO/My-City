@@ -7,23 +7,29 @@ import { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import { Question } from '../../classes/Question';
-import { Typography } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import { CardMedia } from '@material-ui/core';
 import { Answer } from '../../classes/Answer';
 import Chip from '@material-ui/core/Chip';
 import DoneIcon from '@material-ui/icons/Done';
+import CreateIcon from '@material-ui/icons/Create';
 import CancelIcon from '@material-ui/icons/Cancel';
+import { Authority } from '../../classes/Authority';
+import AnswerQuestionDialogueComponent from '../DialogueComponents/AnswerQuestionDialogueComponent';
 
 interface MatchParams {
-    questionId: string,
+    questionId: string;
 }
 
-interface Props extends RouteComponentProps<MatchParams> { }
+interface Props extends RouteComponentProps<MatchParams> {
+    authority?: Authority;
+}
 
 const QuestionPageComponent = (props: Props) => {
 
     const [question, setQuestion] = useState<Question>();
     const [answer, setAnswer] = useState<Answer>();
+    const [isAnswerQuestionDialogueOpen, setAnswerQuestionDialogueOpen] = useState(false);
     const history = useHistory();
 
     useEffect(() => {
@@ -32,7 +38,7 @@ const QuestionPageComponent = (props: Props) => {
             history.push('/404');
             return;
         }
-        //TODO: fetch question data using question id here...
+        //TODO: If (no authority || Authority has permission to view this question) only then fetch it
         setTimeout(() => {
             setQuestion(new Question(1, '2', 'Jane is Running',
                 `Lorem ipsum dolor, sit amet consectetur
@@ -89,6 +95,17 @@ adipisicing elit.`,
         );
     }
 
+    const handleAnswerQuestionDialogueOpen = (): void => {
+        setAnswerQuestionDialogueOpen(true);
+    }
+
+    const handleAnswerQuestion = (answer?: Answer): void => {
+        setAnswerQuestionDialogueOpen(false);
+        if (!answer) return;
+        //TODO: complete this
+        console.log(answer);
+    }
+
     const getAnswerChipView = (): JSX.Element => {
         if (question === undefined) return (
             <Chip
@@ -103,6 +120,24 @@ adipisicing elit.`,
                 color="primary"
                 style={{ marginBottom: '20px', marginTop: '20px' }}
             />
+        );
+        if (props.authority) return (
+            <div className="authorityAnswerQuestionView">
+                <Chip
+                    icon={<CancelIcon />}
+                    label="Unanswered"
+                    color="secondary"
+                    variant="outlined"
+                    style={{ marginBottom: '20px', marginTop: '20px' }}
+                />
+                <Button variant="contained" color="primary" size="small"
+                    startIcon={<CreateIcon />} style={{ marginLeft: '15px' }}
+                    onClick={handleAnswerQuestionDialogueOpen}>
+                    Answer
+                </Button>
+                <AnswerQuestionDialogueComponent open={isAnswerQuestionDialogueOpen}
+                    onClose={handleAnswerQuestion} />
+            </div>
         );
         return (
             <Chip

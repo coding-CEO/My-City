@@ -1,5 +1,5 @@
 export class Citizen {
-  private hashedAadharNumber: string = "1"; //TODO: change this later
+  private hashedAadharNumber: string = ""; //TODO: change this later
   constructor(hashedAadharNumber?: string) {
     if (hashedAadharNumber) this.hashedAadharNumber = hashedAadharNumber;
   }

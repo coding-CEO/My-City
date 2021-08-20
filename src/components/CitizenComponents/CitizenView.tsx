@@ -11,12 +11,18 @@ const CitizenView = () => {
 
     const [citizen, setCitizen] = useState(new Citizen());
 
+    const handleLogin = (aadharNumber: string): void => {
+        //TODO: verify aadhar number and login
+        setCitizen(new Citizen(aadharNumber));
+    }
+
     return (
         <Router>
             <Switch>
                 <Route path='/' exact render={(props) => {
                     if (citizen.getHashedAadharNumber().length > 0) return <Redirect to="/feed" {...props} />;
-                    return <LoginPage setCitizen={setCitizen} />;
+                    return <LoginPage userNameTitle="Aadhar Number" handleLogin={handleLogin}
+                        userNameType="number" />;
                 }} />
                 <Route path='/feed' exact render={(props) => {
                     if (citizen.getHashedAadharNumber().length <= 0) return <Redirect to="/" {...props} />;
