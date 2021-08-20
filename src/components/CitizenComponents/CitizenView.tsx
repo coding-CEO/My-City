@@ -3,6 +3,8 @@ import { useState } from 'react';
 
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { Citizen } from '../../classes/Citizen';
+import axiosInstance from '../../utils/axiosInstance';
+import { ErrorHandler } from '../../utils/ErrorHandler';
 import FeedPage from '../FeedComponents/FeedPage';
 import LoginPage from '../Login_Components/LoginPage';
 import QuestionPageComponent from '../QuestionPageComponents/QuestionPageComponent';
@@ -11,9 +13,13 @@ const CitizenView = () => {
 
     const [citizen, setCitizen] = useState(new Citizen());
 
-    const handleLogin = (aadharNumber: string): void => {
-        //TODO: verify aadhar number and login
-        setCitizen(new Citizen(aadharNumber));
+    const handleLogin = async (aadharNumber: string) => {
+        try {
+            const result = await axiosInstance.post(`/login/citizen`, { aadharNumber: aadharNumber });
+            setCitizen(new Citizen(result.data));
+        } catch (error) {
+            ErrorHandler.handle(error);
+        }
     }
 
     return (

@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useState } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { Authority } from '../../classes/Authority';
+import axiosInstance from '../../utils/axiosInstance';
+import { ErrorHandler } from '../../utils/ErrorHandler';
 import FeedPage from '../FeedComponents/FeedPage';
 import LoginPage from '../Login_Components/LoginPage';
 import QuestionPageComponent from '../QuestionPageComponents/QuestionPageComponent';
@@ -10,9 +12,14 @@ const AuthorityView = () => {
 
     const [authority, setAuthority] = useState(new Authority());
 
-    const handleLogin = (authoritySpecialId: string): void => {
-        //TODO: handle login
-        setAuthority(new Authority(authoritySpecialId));
+    const handleLogin = async (authoritySpecialId: string) => {
+        try {
+            const result = await axiosInstance.post(`/login/authority`, { authoritySpecialId: authoritySpecialId });
+            setAuthority(new Authority(result.data));
+        } catch (error) {
+            ErrorHandler.handle(error);
+        }
+
     }
 
     return (
