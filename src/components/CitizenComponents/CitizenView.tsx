@@ -15,15 +15,15 @@ const CitizenView = () => {
         <Router>
             <Switch>
                 <Route path='/' exact render={(props) => {
-                    if (citizen.getAadharNumber().length > 0) return <Redirect to="/feed" {...props} />;
+                    if (citizen.getHashedAadharNumber().length > 0) return <Redirect to="/feed" {...props} />;
                     return <LoginPage setCitizen={setCitizen} />;
                 }} />
                 <Route path='/feed' exact render={(props) => {
-                    if (citizen.getAadharNumber().length <= 0) return <Redirect to="/" {...props} />;
-                    return <FeedPage />;
+                    if (citizen.getHashedAadharNumber().length <= 0) return <Redirect to="/" {...props} />;
+                    return <FeedPage citizen={citizen} />;
                 }} />
                 <Route path='/question/:questionId' exact render={(props) => {
-                    if (citizen.getAadharNumber().length <= 0) return <Redirect to="/" {...props} />;
+                    if (citizen.getHashedAadharNumber().length <= 0) return <Redirect to="/" {...props} />;
                     return <QuestionPageComponent {...props} />;
                 }} />
                 <Route render={() => {

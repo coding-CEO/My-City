@@ -1,5 +1,6 @@
 export class Question {
   public id: number;
+  public citizenHashedAadharNumber: string;
   public title: string;
   public description: string;
   public timestamp: Date;
@@ -10,6 +11,7 @@ export class Question {
 
   constructor(
     id: number,
+    citizenHashedAadharNumber: string,
     title: string,
     description: string,
     timestamp: Date,
@@ -19,6 +21,7 @@ export class Question {
     ansId?: number
   ) {
     this.id = id;
+    this.citizenHashedAadharNumber = citizenHashedAadharNumber;
     this.title = title;
     this.description = description;
     this.timestamp = timestamp;

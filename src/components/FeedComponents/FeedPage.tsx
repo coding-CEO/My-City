@@ -4,20 +4,28 @@ import './FeedPage.css';
 import LoadingIcon from '../../static/main_loading.gif';
 
 import { useState, useEffect } from 'react';
-import { BottomNavigation, BottomNavigationAction, FormControl, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
+import { BottomNavigation, BottomNavigationAction, Button, FormControl, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
 import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 import DynamicFeedIcon from '@material-ui/icons/DynamicFeed';
 import { Question } from '../../classes/Question';
 import QuestionCardComponent from './QuestionComponents/QuestionCardComponent';
 import { LocationHandler } from '../../utils/LocationHandler';
+import CreateIcon from '@material-ui/icons/Create';
+import AskQuestionDialogueComponent from '../DialogueComponents/AskQuestionDialogueComponent';
+import { Citizen } from '../../classes/Citizen';
 
-const FeedPage = () => {
+interface Props {
+    citizen: Citizen;
+}
+
+const FeedPage = (props: Props) => {
 
     const [tabValue, setTabValue] = useState(0);
     const [questions, setQuestions] = useState<Question[]>([]);
     const [filterState, setFilterState] = useState(0);
     const [filterCity, setFilterCity] = useState(0);
     const [filterQuestionType, setFilterQuestionType] = useState(0);
+    const [isAskQuestionDialogueOpen, setAskQuestionDialogueOpen] = useState(false);
 
     useEffect(() => {
         console.log(window.location.search);
@@ -27,7 +35,8 @@ const FeedPage = () => {
 
     const fetchAllQuestions = (): void => {
         setTimeout(() => {
-            setQuestions([new Question(1, 'Jane is Running', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit.',
+            setQuestions([new Question(1, '2', 'Jane is Running',
+                'Lorem ipsum dolor, sit amet consectetur adipisicing elit.',
                 new Date(), 5, 1,
                 'https://i.picsum.photos/id/781/300/500.jpg?hmac=HyDr7W7aw9LRkzQ3eYgKrLjjO0gXFYF_0VY0oAxM1bE', 2)]);
         }, 2000);
@@ -35,7 +44,7 @@ const FeedPage = () => {
 
     const fetchMyQuestions = (): void => {
         setTimeout(() => {
-            setQuestions([new Question(1, 'Turned On Laptop', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit.',
+            setQuestions([new Question(1, '1', 'Turned On Laptop', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit.',
                 new Date(), 10, 1,
                 'https://i.picsum.photos/id/180/200/300.jpg?hmac=EC8Kweq0GgryGedfHPQFsFTXsZ8NgHaYU5ZnhoGkPLA')]);
         }, 2000);
@@ -77,7 +86,7 @@ const FeedPage = () => {
                             onChange={onFilterStateChange}
                             label="State"
                         >
-                            {LocationHandler.getStates().map((stateName: string, index: number) => {
+                            {LocationHandler.getStates(true).map((stateName: string, index: number) => {
                                 return <MenuItem key={stateName} value={index}>{stateName}</MenuItem>;
                             })}
                         </Select>
@@ -90,7 +99,7 @@ const FeedPage = () => {
                             onChange={onFilterCityChange}
                             label="City"
                         >
-                            {LocationHandler.getCities(filterState).map((cityName: string, index: number) => {
+                            {LocationHandler.getCities(filterState, true).map((cityName: string, index: number) => {
                                 return <MenuItem key={cityName} value={index}>{cityName}</MenuItem>;
                             })}
                         </Select>
@@ -122,11 +131,28 @@ const FeedPage = () => {
         }
     }
 
+    const handleAskQuestionDialogueOpen = (): void => {
+        setAskQuestionDialogueOpen(true);
+    }
+
+    const handleAskQuestion = (question?: Question): void => {
+        setAskQuestionDialogueOpen(false);
+        if (!question) return;
+        //TODO: upload this question and show dialogue/something
+    }
+
     return (
         <div className="feedPage_container">
             <div className="feedContent_container">
                 {getFilteringView()}
                 <Typography variant="h4">{getTitle()}</Typography>
+                <Button variant="contained" startIcon={<CreateIcon />} color="primary" style={{
+                    alignSelf: 'flex-end',
+                }} size="small" onClick={handleAskQuestionDialogueOpen}>
+                    Ask Question
+                </Button>
+                <AskQuestionDialogueComponent open={isAskQuestionDialogueOpen} citizen={props.citizen}
+                    onClose={handleAskQuestion} />
                 <div className="feedContentCards_container">
                     {getQuestionCards()}
                 </div>

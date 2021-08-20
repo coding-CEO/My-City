@@ -34,7 +34,7 @@ const QuestionPageComponent = (props: Props) => {
         }
         //TODO: fetch question data using question id here...
         setTimeout(() => {
-            setQuestion(new Question(1, 'Jane is Running',
+            setQuestion(new Question(1, '2', 'Jane is Running',
                 `Lorem ipsum dolor, sit amet consectetur
     adipisicing elit. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Lorem ipsum dolor, sit amet consectetur
 adipisicing elit.`,
