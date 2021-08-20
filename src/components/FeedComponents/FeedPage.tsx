@@ -13,9 +13,11 @@ import { LocationHandler } from '../../utils/LocationHandler';
 import CreateIcon from '@material-ui/icons/Create';
 import AskQuestionDialogueComponent from '../DialogueComponents/AskQuestionDialogueComponent';
 import { Citizen } from '../../classes/Citizen';
+import { Authority } from '../../classes/Authority';
 
 interface Props {
-    citizen: Citizen;
+    citizen?: Citizen;
+    authority?: Authority;
 }
 
 const FeedPage = (props: Props) => {
@@ -142,42 +144,53 @@ const FeedPage = (props: Props) => {
         console.log(question);
     }
 
+    const isCitizenExist = (): boolean => {
+        return props.citizen !== undefined;
+    }
+
     return (
         <div className="feedPage_container">
-            <div className="feedContent_container">
-                {getFilteringView()}
+            <div className="feedContent_container" style={{ marginTop: (isCitizenExist() ? "56px" : "0px") }}>
+                {isCitizenExist() && getFilteringView()}
                 <Typography variant="h4">{getTitle()}</Typography>
-                <Button variant="contained" startIcon={<CreateIcon />} color="primary" style={{
-                    alignSelf: 'flex-end',
-                }} size="small" onClick={handleAskQuestionDialogueOpen}>
-                    Ask Question
-                </Button>
-                <AskQuestionDialogueComponent open={isAskQuestionDialogueOpen} citizen={props.citizen}
-                    onClose={handleAskQuestion} />
+                {isCitizenExist() && (
+                    <React.Fragment>
+                        <Button variant="contained" startIcon={<CreateIcon />} color="primary" style={{
+                            alignSelf: 'flex-end',
+                        }} size="small" onClick={handleAskQuestionDialogueOpen}>
+                            Ask Question
+                        </Button>
+                        {/* @ts-ignore */}
+                        <AskQuestionDialogueComponent open={isAskQuestionDialogueOpen} citizen={props.citizen}
+                            onClose={handleAskQuestion} />
+                    </React.Fragment>
+                )}
                 <div className="feedContentCards_container">
                     {getQuestionCards()}
                 </div>
             </div>
-            <BottomNavigation
-                value={tabValue}
-                onChange={(event, newValue: number) => {
-                    setTabValue(newValue);
-                    setQuestions([]);
-                    //TODO: think about this later
-                    switch (newValue) {
-                        case 0:
-                            fetchAllQuestions();
-                            break;
-                        case 1:
-                            fetchMyQuestions();
-                            break;
-                    }
-                }}
-                showLabels
-            >
-                <BottomNavigationAction label="Main Feed" icon={<DynamicFeedIcon />} />
-                <BottomNavigationAction label="My Questions" icon={<QuestionAnswerIcon />} />
-            </BottomNavigation>
+            {isCitizenExist() && (
+                <BottomNavigation
+                    value={tabValue}
+                    onChange={(event, newValue: number) => {
+                        setTabValue(newValue);
+                        setQuestions([]);
+                        //TODO: think about this later
+                        switch (newValue) {
+                            case 0:
+                                fetchAllQuestions();
+                                break;
+                            case 1:
+                                fetchMyQuestions();
+                                break;
+                        }
+                    }}
+                    showLabels
+                >
+                    <BottomNavigationAction label="Main Feed" icon={<DynamicFeedIcon />} />
+                    <BottomNavigationAction label="My Questions" icon={<QuestionAnswerIcon />} />
+                </BottomNavigation>
+            )}
         </div>
     );
 }
