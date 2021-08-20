@@ -8,10 +8,10 @@ export class Citizen {
     Object.assign(temp, source);
     return temp;
   };
-  public getAadharNumber = (): string => {
+  public getHashedAadharNumber = (): string => {
     return this.hashedAadharNumber;
   };
-  public setAadharNumber = (hashedAadharNumber: string): void => {
+  public setHashedAadharNumber = (hashedAadharNumber: string): void => {
     this.hashedAadharNumber = hashedAadharNumber;
   };
 }
