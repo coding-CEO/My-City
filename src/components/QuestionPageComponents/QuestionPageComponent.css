@@ -1,11 +1,26 @@
-.questionPage_container {
+.questionPage_container,
+.questionPageContent_container {
   width: 100%;
   box-shadow: 0 0 2px black;
   border-radius: 3px;
   margin-top: 20px;
   padding: 20px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   flex-direction: column;
+  margin-bottom: 30px;
+}
+
+.questionPageContent_container {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.questionContent_img_container {
+  border-radius: 3px;
+  width: 100%;
+  min-height: 300px;
+  margin: 20px 0;
+  box-shadow: 0 0 2px black;
 }
