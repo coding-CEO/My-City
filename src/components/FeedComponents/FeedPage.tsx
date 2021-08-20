@@ -139,6 +139,7 @@ const FeedPage = (props: Props) => {
         setAskQuestionDialogueOpen(false);
         if (!question) return;
         //TODO: upload this question and show dialogue/something
+        console.log(question);
     }
 
     return (
