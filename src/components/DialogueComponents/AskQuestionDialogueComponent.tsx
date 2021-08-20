@@ -21,8 +21,6 @@ const AskQuestionDialogueComponent = (props: Props) => {
     const [city, setCity] = useState(0);
 
     const handleClose = (isSuccess: boolean): void => {
-        //TODO: complete this
-
         if (isSuccess) {
             props.onClose(new Question(-1, props.citizen.getHashedAadharNumber(), title, description, new Date(), state, city, imageUrl));
         } else {
@@ -68,7 +66,6 @@ const AskQuestionDialogueComponent = (props: Props) => {
                         marginBottom: '18px',
                         padding: '10px'
                     }}>
-                        {/* TODO: add src */}
                         <div className="AskQuestionImage_container" style={{
                             width: 'inherit',
                             display: 'flex',
