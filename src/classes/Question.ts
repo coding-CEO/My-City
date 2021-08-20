@@ -27,4 +27,8 @@ export class Question {
     if (img_url) this.img_url = img_url;
     if (ansId) this.ansId = ansId;
   }
+
+  public isAnswered = (): boolean => {
+    return this.ansId >= 0;
+  };
 }

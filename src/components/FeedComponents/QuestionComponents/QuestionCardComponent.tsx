@@ -2,7 +2,9 @@ import * as React from 'react';
 import './QuestionCardComponent.css';
 
 import { Question } from '../../../classes/Question';
-import { Card, CardActionArea, CardMedia, CardContent, Typography } from '@material-ui/core';
+import { Card, CardActionArea, CardMedia, CardContent, Typography, Chip } from '@material-ui/core';
+import DoneIcon from '@material-ui/icons/Done';
+import CancelIcon from '@material-ui/icons/Cancel';
 import { useHistory } from 'react-router-dom';
 
 interface Props {
@@ -17,7 +19,38 @@ const QuestionCardComponent = (props: Props) => {
         history.push(`/question/${props.question.id}`);
     }
 
-    //TODO: add extra fields like, isAnswerd status
+    const getAnswerChipView = (): JSX.Element => {
+        if (props.question.isAnswered()) return (
+            <Chip
+                icon={<DoneIcon />}
+                label="Answered"
+                color="primary"
+                size="small"
+                variant="outlined"
+            />
+        );
+        return (
+            <Chip
+                icon={<CancelIcon />}
+                label="Unanswered"
+                color="secondary"
+                size="small"
+                variant="outlined"
+            />
+        )
+    }
+
+    const getTimeDiff = (): string => {
+        let diff: number = (new Date()).getTime() - props.question.timestamp.getTime();
+        let minutes = diff / 60000;
+        let hours = minutes / 60;
+        let days = hours / 24;
+        if (days >= 1) return `${Math.trunc(days)} Days Ago`;
+        if (hours >= 1) return `${Math.trunc(hours)} Hrs Ago`;
+        if (minutes >= 1) return `${Math.trunc(minutes)} Mins Ago`;
+        return `1 Mins Ago`;
+    }
+
     return (
         <Card className="questionCard_container" onClick={handleOpenQuestion}>
             <CardActionArea>
@@ -32,10 +65,13 @@ const QuestionCardComponent = (props: Props) => {
                     <Typography variant="body2" color="textSecondary" component="p">
                         {props.question.description}...
                     </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p"
-                        style={{ marginTop: '16px', textAlign: 'end' }}>
-                        {props.question.timestamp.toDateString()}
-                    </Typography>
+                    <div className="questionCard_info_container">
+                        {getAnswerChipView()}
+                        <Typography variant="body2" color="textSecondary" component="p"
+                            style={{ textAlign: 'end', fontSize: '13px' }}>
+                            {getTimeDiff()}
+                        </Typography>
+                    </div>
                 </CardContent>
             </CardActionArea>
         </Card>
