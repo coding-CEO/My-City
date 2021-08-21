@@ -1,9 +1,10 @@
 export class Question {
-  public id: number;
+  public questionId: number;
   public citizenHashedAadharNumber: string;
   public title: string;
   public description: string;
   public timestamp: Date;
+  //Here state and city index are 0 based indexed
   public stateIndex: number;
   public cityIndex: number;
   public area: string = "";
@@ -11,7 +12,7 @@ export class Question {
   public ansId: number = -1;
 
   constructor(
-    id: number,
+    questionId: number,
     citizenHashedAadharNumber: string,
     title: string,
     description: string,
@@ -22,7 +23,7 @@ export class Question {
     area?: string,
     ansId?: number
   ) {
-    this.id = id;
+    this.questionId = questionId;
     this.citizenHashedAadharNumber = citizenHashedAadharNumber;
     this.title = title;
     this.description = description;

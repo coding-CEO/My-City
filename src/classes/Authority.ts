@@ -3,8 +3,9 @@ import { AuthorityType } from "../utils/Enums";
 export class Authority {
   authoritySpecitalId: string = "";
   authorityType: AuthorityType = AuthorityType.CITY;
-  stateIndex: number = -1;
-  cityIndex: number = -1;
+  // these indices are 1 based indexed
+  stateIndex: number = 0;
+  cityIndex: number = 0;
 
   constructor(
     authoritySpecialId?: string,

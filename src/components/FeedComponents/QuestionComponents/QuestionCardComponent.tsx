@@ -16,7 +16,7 @@ const QuestionCardComponent = (props: Props) => {
     const history = useHistory();
 
     const handleOpenQuestion = (): void => {
-        history.push(`/question/${props.question.id}`);
+        history.push(`/question/${props.question.questionId}`);
     }
 
     const getAnswerChipView = (): JSX.Element => {
@@ -51,13 +51,20 @@ const QuestionCardComponent = (props: Props) => {
         return `1 Mins Ago`;
     }
 
+    const getCardImageView = (): JSX.Element => {
+        if (!props.question.img_url || props.question.img_url.length <= 0) return <React.Fragment />;
+        return (
+            <CardMedia
+                className="questionCard_img_container"
+                image={props.question.img_url}
+            />
+        );
+    }
+
     return (
         <Card className="questionCard_container" onClick={handleOpenQuestion}>
             <CardActionArea>
-                <CardMedia
-                    className="questionCard_img_container"
-                    image={props.question.img_url}
-                />
+                {getCardImageView()}
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
                         {props.question.title}
