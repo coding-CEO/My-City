@@ -17,6 +17,8 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import { Authority } from '../../classes/Authority';
 import AnswerQuestionDialogueComponent from '../DialogueComponents/AnswerQuestionDialogueComponent';
 import { LocationHandler } from '../../utils/LocationHandler';
+import { ErrorHandler } from '../../utils/ErrorHandler';
+import axiosInstance from '../../utils/axiosInstance';
 
 interface MatchParams {
     questionId: string;
@@ -40,25 +42,31 @@ const QuestionPageComponent = (props: Props) => {
             return;
         }
         //TODO: If (no authority || Authority has permission to view this question) only then fetch it
+        fetchQuestionAndAnswer(questionId);
 
-
-
-        setTimeout(() => {
-            setQuestion(new Question(1, '2', 'Jane is Running',
-                `Lorem ipsum dolor, sit amet consectetur
-    adipisicing elit. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Lorem ipsum dolor, sit amet consectetur
-adipisicing elit.`,
-                new Date(), 0, 0,
-                'https://i.picsum.photos/id/781/300/500.jpg?hmac=HyDr7W7aw9LRkzQ3eYgKrLjjO0gXFYF_0VY0oAxM1bE'));
-            setTimeout(() => {
-                setAnswer(new Answer(1, 'This is why she is running',
-                    `Lorem ipsum dolor, sit amet consectetur
-    adipisicing elit. Lorem i`,
-                    new Date(),
-                    'https://i.picsum.photos/id/180/200/300.jpg?hmac=EC8Kweq0GgryGedfHPQFsFTXsZ8NgHaYU5ZnhoGkPLA'));
-            }, 2000);
-        }, 2000);
     }, [props.match.params.questionId, history]);
+
+    const fetchQuestionAndAnswer = async (questionId: number) => {
+        try {
+            const questionResult = await axiosInstance.get(`/questions/${questionId}`);
+            const tempQuestion = questionResult.data[0];
+            setQuestion(new Question(tempQuestion.questionId, tempQuestion.hashedAadharNumber,
+                tempQuestion.title, tempQuestion.description, new Date(tempQuestion.timestamp),
+                tempQuestion.stateIndex, tempQuestion.cityIndex, tempQuestion.img_url, tempQuestion.area,
+                tempQuestion.answerId));
+
+            //TODO: fetech answers here
+        } catch (error) {
+            ErrorHandler.handle(error);
+        }
+        //             setTimeout(() => {
+        //                 setAnswer(new Answer(1, 'This is why she is running',
+        //                     `Lorem ipsum dolor, sit amet consectetur
+        //     adipisicing elit. Lorem i`,
+        //                     new Date(),
+        //                     'https://i.picsum.photos/id/180/200/300.jpg?hmac=EC8Kweq0GgryGedfHPQFsFTXsZ8NgHaYU5ZnhoGkPLA'));
+        //             }, 2000);
+    }
 
     const getQuestionView = (): JSX.Element => {
         if (question === undefined) return <img src={LoadingIcon} alt="loading" style={{
@@ -67,11 +75,13 @@ adipisicing elit.`,
         }} />;
         return (
             <div className="questionPageContent_container">
-                <Typography variant="h5">{question.title}</Typography>
-                <CardMedia
-                    className="questionContent_img_container"
-                    image={question.img_url}
-                />
+                <Typography variant="h5" style={{ marginBottom: '20px' }}>{question.title}</Typography>
+                {(question.img_url.length > 0) && (
+                    <CardMedia
+                        className="questionContent_img_container"
+                        image={question.img_url}
+                    />
+                )}
                 <Typography variant="body2" component="pre" style={{ width: '100%', whiteSpace: 'pre-wrap' }}>
                     {question.description}
                 </Typography>
@@ -80,11 +90,15 @@ adipisicing elit.`,
     }
 
     const getAnswerView = (): JSX.Element => {
+        if (question === undefined) return <img src={LoadingIcon} alt="loading" style={{
+            width: '30px',
+            alignSelf: 'center'
+        }} />;
+        if (!question.isAnswered()) return <React.Fragment />;
         if (answer === undefined) return <img src={LoadingIcon} alt="loading" style={{
             width: '30px',
             alignSelf: 'center'
         }} />;
-        if (!answer.isAnswered()) return <React.Fragment />;
         return (
             <div className="questionPageContent_container">
                 <Typography variant="h5">{answer.title}</Typography>
