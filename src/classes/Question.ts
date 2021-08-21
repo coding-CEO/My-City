@@ -6,6 +6,7 @@ export class Question {
   public timestamp: Date;
   public stateIndex: number;
   public cityIndex: number;
+  public area: string = "";
   public img_url: string = "";
   public ansId: number = -1;
 
@@ -18,6 +19,7 @@ export class Question {
     stateIndex: number,
     cityIndex: number,
     img_url?: string,
+    area?: string,
     ansId?: number
   ) {
     this.id = id;
@@ -27,6 +29,7 @@ export class Question {
     this.timestamp = timestamp;
     this.stateIndex = stateIndex;
     this.cityIndex = cityIndex;
+    if (area) this.area = area;
     if (img_url) this.img_url = img_url;
     if (ansId) this.ansId = ansId;
   }

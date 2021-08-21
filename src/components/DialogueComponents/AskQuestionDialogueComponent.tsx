@@ -14,15 +14,17 @@ interface Props {
 
 const AskQuestionDialogueComponent = (props: Props) => {
 
+    //TODO: add area text field 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [imageUrl, setImageUrl] = useState("");
     const [state, setState] = useState(0);
     const [city, setCity] = useState(0);
+    const [area, setArea] = useState("");
 
     const handleClose = (isSuccess: boolean): void => {
         if (isSuccess) {
-            props.onClose(new Question(-1, props.citizen.getHashedAadharNumber(), title, description, new Date(), state, city, imageUrl));
+            props.onClose(new Question(-1, props.citizen.getHashedAadharNumber(), title, description, new Date(), state, city, imageUrl, area));
         } else {
             props.onClose();
         }
@@ -32,6 +34,7 @@ const AskQuestionDialogueComponent = (props: Props) => {
         setImageUrl("");
         setState(0);
         setCity(0);
+        setArea("");
     }
 
     const onStateChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
@@ -124,6 +127,17 @@ const AskQuestionDialogueComponent = (props: Props) => {
                             })}
                         </Select>
                     </FormControl>
+                    <TextField
+                        label="Place (Area - Pincode)"
+                        value={area}
+                        type="text"
+                        style={{ marginBottom: '15px' }}
+                        variant="outlined"
+                        onChange={(input) => {
+                            setArea(input.target.value);
+                        }}
+                        fullWidth
+                    />
                     <TextField
                         label="Description"
                         multiline

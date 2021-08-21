@@ -40,7 +40,7 @@ const FeedPage = (props: Props) => {
             setQuestions([new Question(1, '2', 'Jane is Running',
                 'Lorem ipsum dolor, sit amet consectetur adipisicing elit.',
                 new Date(), 5, 1,
-                'https://i.picsum.photos/id/781/300/500.jpg?hmac=HyDr7W7aw9LRkzQ3eYgKrLjjO0gXFYF_0VY0oAxM1bE', 2)]);
+                'https://i.picsum.photos/id/781/300/500.jpg?hmac=HyDr7W7aw9LRkzQ3eYgKrLjjO0gXFYF_0VY0oAxM1bE', "", 2)]);
         }, 2000);
     }
 
