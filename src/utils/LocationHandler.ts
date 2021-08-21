@@ -23,9 +23,11 @@ export class LocationHandler {
     return [...finalCities, ...cities[stateIndex].cities];
   };
   public static getState = (stateIndex: number): string => {
-    return cities[stateIndex].state;
+    if (cities[stateIndex]) return cities[stateIndex].state;
+    return "";
   };
   public static getCity = (stateIndex: number, cityIndex: number): string => {
-    return cities[stateIndex].cities[cityIndex];
+    if (cities[stateIndex]) return cities[stateIndex].cities[cityIndex];
+    return "";
   };
 }
