@@ -1,8 +1,6 @@
 import * as React from 'react';
 import './FeedPage.css';
 
-import LoadingIcon from '../../static/main_loading.gif';
-
 import { useState, useEffect } from 'react';
 import { BottomNavigation, BottomNavigationAction, Button, FormControl, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
 import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
@@ -14,6 +12,9 @@ import CreateIcon from '@material-ui/icons/Create';
 import AskQuestionDialogueComponent from '../DialogueComponents/AskQuestionDialogueComponent';
 import { Citizen } from '../../classes/Citizen';
 import { Authority } from '../../classes/Authority';
+import { ErrorHandler } from '../../utils/ErrorHandler';
+import axiosInstance from '../../utils/axiosInstance';
+import axios from 'axios';
 
 interface Props {
     citizen?: Citizen;
@@ -24,54 +25,87 @@ const FeedPage = (props: Props) => {
 
     const [tabValue, setTabValue] = useState(0);
     const [questions, setQuestions] = useState<Question[]>([]);
+    //Filter states are 1 based indexed
     const [filterState, setFilterState] = useState(0);
     const [filterCity, setFilterCity] = useState(0);
     const [filterQuestionType, setFilterQuestionType] = useState(0);
     const [isAskQuestionDialogueOpen, setAskQuestionDialogueOpen] = useState(false);
 
     useEffect(() => {
-        console.log(window.location.search);
-        //TODO: fetch questions accordingly
         fetchAllQuestions();
-    }, []);
+        return () => {
+            setQuestions([]);
+        }
+    }, [tabValue, props.citizen, filterState, filterCity, filterQuestionType]);
 
     const fetchAllQuestions = (): void => {
-        setTimeout(() => {
-            setQuestions([new Question(1, '2', 'Jane is Running',
-                'Lorem ipsum dolor, sit amet consectetur adipisicing elit.',
-                new Date(), 5, 1,
-                'https://i.picsum.photos/id/781/300/500.jpg?hmac=HyDr7W7aw9LRkzQ3eYgKrLjjO0gXFYF_0VY0oAxM1bE', 2)]);
-        }, 2000);
+        setQuestions([]);
+        if (tabValue === 0) {
+            if (props.citizen)
+                fetchAllCitizenQuestions();
+            else
+                fetchAllAuthorityQuestions();
+        } else {
+            fetchMyQuestions();
+        }
     }
 
-    const fetchMyQuestions = (): void => {
-        setTimeout(() => {
-            setQuestions([new Question(1, '1', 'Turned On Laptop', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit.',
-                new Date(), 10, 1,
-                'https://i.picsum.photos/id/180/200/300.jpg?hmac=EC8Kweq0GgryGedfHPQFsFTXsZ8NgHaYU5ZnhoGkPLA')]);
-        }, 2000);
+    const fetchAllCitizenQuestions = async () => {
+        try {
+            const result = await axiosInstance.get(`/questions?stateIndex=${filterState}&cityIndex=${filterCity}&question_type=${filterQuestionType}`);
+            setQuestionsUtil(result.data);
+        } catch (error) {
+            ErrorHandler.handle(error);
+        }
+    }
+
+    const fetchAllAuthorityQuestions = async () => {
+        if (!props.authority) return;
+        try {
+            const result = await axiosInstance.get(`/questions?stateIndex=${props.authority.stateIndex}&cityIndex=${props.authority.cityIndex}&question_type=0`);
+            setQuestionsUtil(result.data);
+        } catch (error) {
+            ErrorHandler.handle(error);
+        }
+    }
+
+    const fetchMyQuestions = async () => {
+        if (!props.citizen) return;
+        try {
+            const result = await axiosInstance.get(`/questions?hashedAadharNumber=${props.citizen.getHashedAadharNumber()}&stateIndex=${filterState}&cityIndex=${filterCity}&question_type=${filterQuestionType}`);
+            setQuestionsUtil(result.data);
+        } catch (error) {
+            ErrorHandler.handle(error);
+        }
+    }
+
+    const setQuestionsUtil = (questions: any[]): void => {
+        const main_questions: Question[] = [];
+        questions.forEach((tempQuestion) => {
+            main_questions.push(new Question(tempQuestion.questionId, tempQuestion.hashedAadharNumber,
+                tempQuestion.title, tempQuestion.description, new Date(tempQuestion.timestamp),
+                tempQuestion.stateIndex, tempQuestion.cityIndex, tempQuestion.img_url, tempQuestion.area,
+                tempQuestion.answerId));
+        });
+        setQuestions(main_questions);
     }
 
     const getQuestionCards = (): JSX.Element[] => {
-        if (questions.length <= 0) return [<img src={LoadingIcon} key="$" alt="loading" style={{ width: '50px' }} />];
         return questions.map((question: Question, index: number) => {
-            return <QuestionCardComponent key={question.id} question={question} />;
+            return <QuestionCardComponent key={question.questionId} question={question} />;
         });
     }
 
     const onFilterStateChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
-        //TODO: completet this (maybe filter directly)
         setFilterState(Number(event.target.value));
         setFilterCity(0);
     }
 
     const onFilterCityChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
-        //TODO: completet this (maybe filter directly)
         setFilterCity(Number(event.target.value));
     }
 
     const onFilterQuestionTypeChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
-        //TODO: completet this (maybe filter directly)
         setFilterQuestionType(Number(event.target.value));
     }
 
@@ -137,11 +171,44 @@ const FeedPage = (props: Props) => {
         setAskQuestionDialogueOpen(true);
     }
 
-    const handleAskQuestion = (question?: Question): void => {
+    const handleAskQuestion = async (question?: Question) => {
         setAskQuestionDialogueOpen(false);
         if (!question) return;
         //TODO: upload this question and show dialogue/something
-        console.log(question);
+        let formConfig = {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        };
+
+        let data = new FormData();
+
+        if (question.img_url.length > 0) {
+            try {
+                const imageRes = await axios.get(question.img_url, { responseType: 'blob' });
+                // TODO: maybe apply image compression here.
+                const imageBlob = imageRes.data;
+                data.append("questionImg", imageBlob);
+            } catch (error) {
+                ErrorHandler.handle(error);
+            }
+        }
+
+        data.append("citizenHashedAadharNumber", question.citizenHashedAadharNumber);
+        data.append("title", question.title);
+        data.append("description", question.description);
+        data.append("timestamp", question.timestamp.getTime().toString());
+        data.append("stateIndex", question.stateIndex.toString());
+        data.append("cityIndex", question.cityIndex.toString());
+        data.append("area", question.area);
+
+        try {
+            const result = await axiosInstance.post('/questions', data, formConfig);
+            question.questionId = result.data.questionId;
+            setQuestions([question, ...questions]);
+        } catch (error) {
+            ErrorHandler.handle(error);
+        }
     }
 
     const isCitizenExist = (): boolean => {
@@ -174,16 +241,6 @@ const FeedPage = (props: Props) => {
                     value={tabValue}
                     onChange={(event, newValue: number) => {
                         setTabValue(newValue);
-                        setQuestions([]);
-                        //TODO: think about this later
-                        switch (newValue) {
-                            case 0:
-                                fetchAllQuestions();
-                                break;
-                            case 1:
-                                fetchMyQuestions();
-                                break;
-                        }
                     }}
                     showLabels
                 >

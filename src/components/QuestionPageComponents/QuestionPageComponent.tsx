@@ -149,6 +149,7 @@ adipisicing elit.`,
         )
     }
 
+    //TODO: add location of incident in view
     return (
         <div className="questionPage_container">
             <Typography variant="h4" style={{ marginBottom: '20px' }}>Question</Typography>

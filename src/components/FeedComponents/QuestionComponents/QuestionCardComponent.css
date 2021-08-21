@@ -1,6 +1,7 @@
 .questionCard_container {
   width: 90%;
   max-width: 300px;
+  margin-top: 15px;
 }
 
 .questionCard_img_container {

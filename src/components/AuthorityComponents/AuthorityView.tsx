@@ -15,6 +15,7 @@ const AuthorityView = () => {
     const handleLogin = async (authoritySpecialId: string) => {
         try {
             const result = await axiosInstance.post(`/login/authority`, { authoritySpecialId: authoritySpecialId });
+            //TODO: add extra data of state and city from database
             setAuthority(new Authority(result.data));
         } catch (error) {
             ErrorHandler.handle(error);
