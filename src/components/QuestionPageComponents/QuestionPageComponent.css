@@ -24,3 +24,14 @@
   margin: 20px 0;
   box-shadow: 0 0 2px black;
 }
+
+.questionPage_location_conat {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  padding: 15px;
+  box-shadow: 0 0 2px black;
+  margin-bottom: 15px;
+  border-radius: 3px;
+}
