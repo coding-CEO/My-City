@@ -9,7 +9,7 @@ export class Question {
   public cityIndex: number;
   public area: string = "";
   public img_url: string = "";
-  public ansId: number = -1;
+  public answerId: number = -1;
 
   constructor(
     questionId: number,
@@ -21,7 +21,7 @@ export class Question {
     cityIndex: number,
     img_url?: string,
     area?: string,
-    ansId?: number
+    answerId?: number
   ) {
     this.questionId = questionId;
     this.citizenHashedAadharNumber = citizenHashedAadharNumber;
@@ -32,10 +32,16 @@ export class Question {
     this.cityIndex = cityIndex;
     if (area) this.area = area;
     if (img_url) this.img_url = img_url;
-    if (ansId) this.ansId = ansId;
+    if (answerId) this.answerId = answerId;
   }
 
+  public static deepCopy = (source: Question): Question => {
+    let temp = Object.create(source);
+    Object.assign(temp, source);
+    return temp;
+  };
+
   public isAnswered = (): boolean => {
-    return this.ansId >= 0;
+    return this.answerId >= 0;
   };
 }
