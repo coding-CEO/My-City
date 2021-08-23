@@ -99,18 +99,31 @@ const QuestionPageComponent = (props: Props) => {
             alignSelf: 'center'
         }} />;
         return (
-            <div className="questionPageContent_container">
-                <Typography variant="h5" style={{ marginBottom: '20px' }}>{answer.title}</Typography>
-                {(answer.img_url.length > 0) && (
-                    <CardMedia
-                        className="questionContent_img_container"
-                        image={answer.img_url}
-                    />
-                )}
-                <Typography variant="body2" component="pre" style={{ width: '100%', whiteSpace: 'pre-wrap' }}>
-                    {answer.description}
-                </Typography>
-            </div>
+            <React.Fragment>
+                <div className="questionPage_location_conat">
+                    <Typography variant="subtitle2" style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        justifyContent: 'center'
+                    }}>
+                        Answer Date: <Typography variant="body2" component="p" style={{ marginLeft: '10px' }}>
+                            {answer.timestamp.toLocaleString()}
+                        </Typography>
+                    </Typography>
+                </div>
+                <div className="questionPageContent_container">
+                    <Typography variant="h5" style={{ marginBottom: '20px' }}>{answer.title}</Typography>
+                    {(answer.img_url.length > 0) && (
+                        <CardMedia
+                            className="questionContent_img_container"
+                            image={answer.img_url}
+                        />
+                    )}
+                    <Typography variant="body2" component="pre" style={{ width: '100%', whiteSpace: 'pre-wrap' }}>
+                        {answer.description}
+                    </Typography>
+                </div>
+            </React.Fragment>
         );
     }
 
@@ -237,7 +250,7 @@ const QuestionPageComponent = (props: Props) => {
                     justifyContent: 'center'
                 }}>
                     Upload Date: <Typography variant="body2" component="p" style={{ marginLeft: '10px' }}>
-                        {question.timestamp.toDateString()}
+                        {question.timestamp.toLocaleString()}
                     </Typography>
                 </Typography>
             </div>

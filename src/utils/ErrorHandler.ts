@@ -1,5 +1,5 @@
 export class ErrorHandler {
   public static handle = (error: Error): void => {
-    console.error(error.message);
+    console.error("Custom Error Handler: ", error.message);
   };
 }
