@@ -36,6 +36,7 @@ const FeedPage = (props: Props) => {
         return () => {
             setQuestions([]);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tabValue, props.citizen, filterState, filterCity, filterQuestionType]);
 
     const fetchAllQuestions = (): void => {
@@ -174,7 +175,6 @@ const FeedPage = (props: Props) => {
     const handleAskQuestion = async (question?: Question) => {
         setAskQuestionDialogueOpen(false);
         if (!question) return;
-        //TODO: upload this question and show dialogue/something
         let formConfig = {
             headers: {
                 "Content-Type": "multipart/form-data",

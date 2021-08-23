@@ -14,7 +14,6 @@ interface Props {
 
 const AskQuestionDialogueComponent = (props: Props) => {
 
-    //TODO: add area text field 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [imageUrl, setImageUrl] = useState("");

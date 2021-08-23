@@ -19,6 +19,7 @@ import AnswerQuestionDialogueComponent from '../DialogueComponents/AnswerQuestio
 import { LocationHandler } from '../../utils/LocationHandler';
 import { ErrorHandler } from '../../utils/ErrorHandler';
 import axiosInstance from '../../utils/axiosInstance';
+import axios from 'axios';
 
 interface MatchParams {
     questionId: string;
@@ -55,17 +56,15 @@ const QuestionPageComponent = (props: Props) => {
                 tempQuestion.stateIndex, tempQuestion.cityIndex, tempQuestion.img_url, tempQuestion.area,
                 tempQuestion.answerId));
 
-            //TODO: fetech answers here
+            if (!tempQuestion.answerId || tempQuestion.answerId < 0) return;
+
+            const answerResult = await axiosInstance.get(`/answers/${tempQuestion.answerId}`);
+            const tempAnswer = answerResult.data[0];
+            setAnswer(new Answer(tempAnswer.answerId, tempAnswer.title, tempAnswer.description,
+                new Date(tempAnswer.timestamp), tempAnswer.img_url));
         } catch (error) {
             ErrorHandler.handle(error);
         }
-        //             setTimeout(() => {
-        //                 setAnswer(new Answer(1, 'This is why she is running',
-        //                     `Lorem ipsum dolor, sit amet consectetur
-        //     adipisicing elit. Lorem i`,
-        //                     new Date(),
-        //                     'https://i.picsum.photos/id/180/200/300.jpg?hmac=EC8Kweq0GgryGedfHPQFsFTXsZ8NgHaYU5ZnhoGkPLA'));
-        //             }, 2000);
     }
 
     const getQuestionView = (): JSX.Element => {
@@ -100,16 +99,31 @@ const QuestionPageComponent = (props: Props) => {
             alignSelf: 'center'
         }} />;
         return (
-            <div className="questionPageContent_container">
-                <Typography variant="h5">{answer.title}</Typography>
-                <CardMedia
-                    className="questionContent_img_container"
-                    image={answer.img_url}
-                />
-                <Typography variant="body2" component="pre" style={{ width: '100%', whiteSpace: 'pre-wrap' }}>
-                    {answer.description}
-                </Typography>
-            </div>
+            <React.Fragment>
+                <div className="questionPage_location_conat">
+                    <Typography variant="subtitle2" style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        justifyContent: 'center'
+                    }}>
+                        Answer Date: <Typography variant="body2" component="p" style={{ marginLeft: '10px' }}>
+                            {answer.timestamp.toLocaleString()}
+                        </Typography>
+                    </Typography>
+                </div>
+                <div className="questionPageContent_container">
+                    <Typography variant="h5" style={{ marginBottom: '20px' }}>{answer.title}</Typography>
+                    {(answer.img_url.length > 0) && (
+                        <CardMedia
+                            className="questionContent_img_container"
+                            image={answer.img_url}
+                        />
+                    )}
+                    <Typography variant="body2" component="pre" style={{ width: '100%', whiteSpace: 'pre-wrap' }}>
+                        {answer.description}
+                    </Typography>
+                </div>
+            </React.Fragment>
         );
     }
 
@@ -117,11 +131,43 @@ const QuestionPageComponent = (props: Props) => {
         setAnswerQuestionDialogueOpen(true);
     }
 
-    const handleAnswerQuestion = (answer?: Answer): void => {
+    const handleAnswerQuestion = async (answer?: Answer) => {
         setAnswerQuestionDialogueOpen(false);
-        if (!answer) return;
-        //TODO: complete this
-        console.log(answer);
+        if (!answer || !question) return;
+
+        let formConfig = {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        };
+
+        let data = new FormData();
+
+        if (answer.img_url.length > 0) {
+            try {
+                const imageRes = await axios.get(answer.img_url, { responseType: 'blob' });
+                // TODO: maybe apply image compression here.
+                const imageBlob = imageRes.data;
+                data.append("answerImg", imageBlob);
+            } catch (error) {
+                ErrorHandler.handle(error);
+            }
+        }
+
+        data.append("title", answer.title);
+        data.append("description", answer.description);
+        data.append("timestamp", answer.timestamp.getTime().toString());
+        data.append("questionId", question.questionId.toString());
+
+        try {
+            const result = await axiosInstance.post('/answers', data, formConfig);
+            answer.answerId = result.data.answerId;
+            question.answerId = result.data.answerId;
+            setAnswer(Answer.deepCopy(answer));
+            setQuestion(Question.deepCopy(question));
+        } catch (error) {
+            ErrorHandler.handle(error);
+        }
     }
 
     const getAnswerChipView = (): JSX.Element => {
@@ -173,7 +219,7 @@ const QuestionPageComponent = (props: Props) => {
             <div className="questionPage_location_conat">
                 <Typography variant="subtitle2" style={{
                     display: 'flex',
-                    alignItems: 'center',
+                    alignItems: 'flex-start',
                     justifyContent: 'center'
                 }}>
                     State: <Typography variant="body2" component="p" style={{ marginLeft: '10px' }}>
@@ -182,7 +228,7 @@ const QuestionPageComponent = (props: Props) => {
                 </Typography>
                 <Typography variant="subtitle2" style={{
                     display: 'flex',
-                    alignItems: 'center',
+                    alignItems: 'flex-start',
                     justifyContent: 'center'
                 }}>
                     City: <Typography variant="body2" component="p" style={{ marginLeft: '10px' }}>
@@ -191,11 +237,20 @@ const QuestionPageComponent = (props: Props) => {
                 </Typography>
                 <Typography variant="subtitle2" style={{
                     display: 'flex',
-                    alignItems: 'center',
+                    alignItems: 'flex-start',
                     justifyContent: 'center'
                 }}>
                     Area: <Typography variant="body2" component="p" style={{ marginLeft: '10px' }}>
                         {question.area}
+                    </Typography>
+                </Typography>
+                <Typography variant="subtitle2" style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    justifyContent: 'center'
+                }}>
+                    Upload Date: <Typography variant="body2" component="p" style={{ marginLeft: '10px' }}>
+                        {question.timestamp.toLocaleString()}
                     </Typography>
                 </Typography>
             </div>
