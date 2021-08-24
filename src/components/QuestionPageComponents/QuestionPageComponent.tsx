@@ -20,6 +20,7 @@ import { LocationHandler } from '../../utils/LocationHandler';
 import { ErrorHandler } from '../../utils/ErrorHandler';
 import axiosInstance from '../../utils/axiosInstance';
 import axios from 'axios';
+import { compressImage } from '../../utils/imageCompressor';
 
 interface MatchParams {
     questionId: string;
@@ -146,8 +147,7 @@ const QuestionPageComponent = (props: Props) => {
         if (answer.img_url.length > 0) {
             try {
                 const imageRes = await axios.get(answer.img_url, { responseType: 'blob' });
-                // TODO: maybe apply image compression here.
-                const imageBlob = imageRes.data;
+                const imageBlob = await compressImage(imageRes.data, 0.3);
                 data.append("answerImg", imageBlob);
             } catch (error) {
                 ErrorHandler.handle(error);

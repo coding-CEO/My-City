@@ -15,6 +15,7 @@ import { Authority } from '../../classes/Authority';
 import { ErrorHandler } from '../../utils/ErrorHandler';
 import axiosInstance from '../../utils/axiosInstance';
 import axios from 'axios';
+import { compressImage } from '../../utils/imageCompressor';
 
 interface Props {
     citizen?: Citizen;
@@ -186,8 +187,7 @@ const FeedPage = (props: Props) => {
         if (question.img_url.length > 0) {
             try {
                 const imageRes = await axios.get(question.img_url, { responseType: 'blob' });
-                // TODO: maybe apply image compression here.
-                const imageBlob = imageRes.data;
+                const imageBlob = await compressImage(imageRes.data, 0.3);
                 data.append("questionImg", imageBlob);
             } catch (error) {
                 ErrorHandler.handle(error);
