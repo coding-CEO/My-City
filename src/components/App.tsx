@@ -10,7 +10,7 @@ const App = () => {
   const isAuthority = (): boolean => {
     const hostName = window.location.hostname;
     const domains = hostName.split('.');
-    return ((domains.length > 1) && (domains[0] === 'gov'));
+    return ((domains.length > 1) && (domains[0] === 'my-city-gov'));
   }
 
   const getViewAccordingToUrl = (): JSX.Element => {
